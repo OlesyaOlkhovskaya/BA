@@ -1,0 +1,51 @@
+@startuml
+!define RECTANGLE class
+
+RECTANGLE Преподаватель {
+  + id: int
+  + ФИО: string
+  + email: string
+}
+
+RECTANGLE Студент {
+  + id: int
+  + ФИО: string
+  + email: string
+  + группа_id: int
+}
+
+RECTANGLE Группа {
+  + id: int
+  + название: string
+}
+
+RECTANGLE Курсы {
+  + id: int
+  + название: string
+  + описание: string
+  + преподаватель_id: int
+}
+
+RECTANGLE Задания {
+  + id: int
+  + курс_id: int
+  + название: string
+  + описание: string
+  + срок_сдачи: date
+}
+
+RECTANGLE Оценки {
+  + id: int
+  + студент_id: int
+  + задание_id: int
+  + оценка: int
+  + дата_оценки: date
+}
+
+Преподаватель "1" -- "0..*" Курсы : "ведет"
+Студент "1" -- "0..*" Оценки : "получает"
+Группа "1" -- "0..*" Студент : "включает"
+Курсы "1" -- "0..*" Задания : "включает"
+Задания "1" -- "0..*" Оценки : "выставляет"
+
+@enduml
