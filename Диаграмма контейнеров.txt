@@ -1,63 +1,40 @@
 @startuml
-!define RECTANGLE class
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
-RECTANGLE Пользователь {
-  + Регистрация
-  + Создание профиля
-  + Просмотр курсов
-  + Прохождение курсов
+title
+  <b>Подсистема для преподавателей</b>
+  <i>Управление курсами и взаимодействие со студентами</i>
+end title
+
+Person(teachers, "Преподаватели")
+Person(institutions, "Учебные заведения")
+Person(students, "Студенты")
+
+System_Boundary(teacher_subsystem, "Подсистема для преподавателей") {
+  Container(registration_module, "Модуль регистрации", "Python 3.9, Django 3.2", "Регистрация и создание профилей")
+  Container(course_management_module, "Модуль управления курсами", "Python 3.9, Django 3.2", "Разработка и размещение курсов")
+  Container(communication_module, "Модуль коммуникации", "Python 3.9, Django 3.2", "Взаимодействие с преподавателями и студентами")
+
+  ContainerDb(database, "PostgreSQL 13", "Хранение данных")
+
+  Rel(teachers, registration_module, "Регистрация и создание профилей", "HTTP/REST")
+  Rel(institutions, registration_module, "Регистрация и создание профилей", "HTTP/REST")
+
+  Rel(teachers, course_management_module, "Разработка и размещение курсов", "HTTP/REST")
+  Rel(institutions, course_management_module, "Разработка и размещение курсов", "HTTP/REST")
+
+  Rel(students, communication_module, "Взаимодействие с преподавателями", "HTTP/REST")
+  Rel(teachers, communication_module, "Взаимодействие со студентами", "HTTP/REST")
+
+  Rel(registration_module, database, "Чтение/Запись данных о профилях", "SQL")
+  Rel(course_management_module, database, "Чтение/Запись данных о курсах", "SQL")
+  Rel(communication_module, database, "Чтение/Запись данных о коммуникациях", "SQL")
 }
 
-RECTANGLE Преподаватель {
-  + Регистрация
-  + Создание профиля
-  + Разработка курсов
-  + Публикация курсов
-}
+System_Ext(cms, "Система управления контентом", "Предоставление учебных материалов")
+System_Ext(notification_system, "Система уведомлений", "Отправка уведомлений")
 
-RECTANGLE Учебное_заведение {
-  + Регистрация
-  + Создание профиля
-  + Управление курсами
-}
-
-RECTANGLE Администратор {
-  + Проверка регистраций
-  + Управление пользователями
-  + Управление курсами
-}
-
-RECTANGLE Система {
-  + Управление пользователями
-  + Управление курсами
-  + Управление учебными материалами
-}
-
-RECTANGLE База_данных {
-  + Хранение данных пользователей
-  + Хранение данных курсов
-  + Хранение учебных материалов
-}
-
-RECTANGLE Веб-приложение {
-  + Интерфейс пользователя
-  + Интерфейс преподавателя
-  + Интерфейс учебного заведения
-  + Интерфейс администратора
-}
-
-RECTANGLE API {
-  + API для управления пользователями
-  + API для управления курсами
-  + API для управления учебными материалами
-}
-
-Пользователь --> Веб_приложение : Взаимодействие
-Преподаватель --> Веб_приложение : Взаимодействие
-Учебное_заведение --> Веб_приложение : Взаимодействие
-Администратор --> Веб_приложение : Взаимодействие
-
-Веб_приложение --> API : Запросы
-API --> База_данных : Запросы
+Rel(cms, course_management_module, "Предоставление учебных материалов", "HTTP/REST")
+Rel(notification_system, communication_module, "Отправка уведомлений", "HTTP/REST")
 
 @enduml
