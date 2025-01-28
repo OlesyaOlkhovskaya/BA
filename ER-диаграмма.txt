@@ -3,10 +3,11 @@
 ' hide the spot
 ' hide circle
 
-
+' avoid problems with angled crows feet
+skinparam linetype ortho
 
 entity "Преподаватель" as Teacher {
-  *ID : int 
+  *ID : int <<generated>>
   --
   *Имя : text
   Фамилия : text
@@ -15,7 +16,7 @@ entity "Преподаватель" as Teacher {
 }
 
 entity "Учебное заведение" as Institution {
-  *ID : int 
+  *ID : int <<generated>>
   --
   *Название : text
   Адрес : text
@@ -24,16 +25,17 @@ entity "Учебное заведение" as Institution {
 }
 
 entity "Студент" as Student {
-  *ID : int 
+  *ID : int <<generated>>
   --
   *Имя : text
   Фамилия : text
   Email : text
   Пароль : text
+  УчебноеЗаведениеID : int <<FK>>
 }
 
 entity "Курс" as Course {
-  *ID : int 
+  *ID : int <<generated>>
   --
   *Название : text
   Описание : text
@@ -42,7 +44,7 @@ entity "Курс" as Course {
 }
 
 entity "Расписание" as Schedule {
-  *ID : int 
+  *ID : int <<generated>>
   --
   КурсID : int <<FK>>
   Дата : date
@@ -50,13 +52,13 @@ entity "Расписание" as Schedule {
 }
 
 entity "Оценка" as Grade {
-  *ID : int 
+  *ID : int <<generated>>
   --
-  СтудентID : int <<FK>>
-  КурсID : int <<FK>>
+  ЗачислениеID : int <<FK>>
   Оценка : int
   Дата : date
 }
+
 entity "Зачисление" as Enrollment {
   *ID : int <<generated>>
   --
@@ -67,10 +69,10 @@ entity "Зачисление" as Enrollment {
 
 Teacher ||..o{ Course
 Institution ||..o{ Course
-Student |o..o{ Course
-Course ||..o{ Schedule
-Student |o..o{ Grade
-Course |o..o{ Grade
 Student |o..o{ Enrollment
 Course |o..o{ Enrollment
+Course ||..o{ Schedule
+Enrollment ||..o{ Grade
+Institution ||..o{ Student
+
 @enduml
