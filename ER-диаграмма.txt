@@ -1,51 +1,70 @@
 @startuml
-!define RECTANGLE class
 
-RECTANGLE Преподаватель {
-  + id: int
-  + ФИО: string
-  + email: string
+' hide the spot
+' hide circle
+
+' avoid problems with angled crows feet
+skinparam linetype ortho
+
+entity "Преподаватель" as Teacher {
+  *ID : int 
+  --
+  *Имя : text
+  Фамилия : text
+  Email : text
+  Пароль : text
 }
 
-RECTANGLE Студент {
-  + id: int
-  + ФИО: string
-  + email: string
-  + группа_id: int
+entity "Учебное заведение" as Institution {
+  *ID : int 
+  --
+  *Название : text
+  Адрес : text
+  Email : text
+  Пароль : text
 }
 
-RECTANGLE Группа {
-  + id: int
-  + название: string
+entity "Студент" as Student {
+  *ID : int 
+  --
+  *Имя : text
+  Фамилия : text
+  Email : text
+  Пароль : text
 }
 
-RECTANGLE Курсы {
-  + id: int
-  + название: string
-  + описание: string
-  + преподаватель_id: int
+entity "Курс" as Course {
+  *ID : int 
+  --
+  *Название : text
+  Описание : text
+  ПреподавательID : int <<FK>>
+  УчебноеЗаведениеID : int <<FK>>
 }
 
-RECTANGLE Задания {
-  + id: int
-  + курс_id: int
-  + название: string
-  + описание: string
-  + срок_сдачи: date
+entity "Расписание" as Schedule {
+  *ID : int 
+  --
+  КурсID : int <<FK>>
+  Дата : date
+  Время : time
 }
 
-RECTANGLE Оценки {
-  + id: int
-  + студент_id: int
-  + задание_id: int
-  + оценка: int
-  + дата_оценки: date
+entity "Оценка" as Grade {
+  *ID : int 
+  --
+  СтудентID : int <<FK>>
+  КурсID : int <<FK>>
+  Оценка : int
+  Дата : date
 }
 
-Преподаватель "1" -- "0..*" Курсы : "ведет"
-Студент "1" -- "0..*" Оценки : "получает"
-Группа "1" -- "0..*" Студент : "включает"
-Курсы "1" -- "0..*" Задания : "включает"
-Задания "1" -- "0..*" Оценки : "выставляет"
+
+Teacher ||..o{ Course
+Institution ||..o{ Course
+Student |o..o{ Course
+Course ||..o{ Schedule
+Student |o..o{ Grade
+Course |o..o{ Grade
 
 @enduml
