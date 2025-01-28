@@ -1,42 +1,33 @@
 @startuml
-!define RECTANGLE class
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+' uncomment the following line and comment the first to use locally
+' !include C4_Context.puml
 
-RECTANGLE Пользователь {
-  + Регистрация
-  + Создание профиля
-  + Просмотр курсов
-  + Прохождение курсов
-}
+LAYOUT_WITH_LEGEND()
 
-RECTANGLE Преподаватель {
-  + Регистрация
-  + Создание профиля
-  + Разработка курсов
-  + Публикация курсов
-}
+title System Context diagram for Course Management System
 
-RECTANGLE Учебное_заведение {
-  + Регистрация
-  + Создание профиля
-  + Управление курсами
-}
+Person(teachers, "Преподаватели", "Пользователи, которые создают и управляют курсами.")
+Person(institutions, "Учебные заведения", "Организации, которые могут регистрироваться и управлять курсами и преподавателями.")
+Person(students, "Студенты", "Пользователи, которые участвуют в курсах и взаимодействуют с преподавателями.")
+Person(admins, "Администраторы", "Пользователи, которые управляют системой и пользователями.")
 
-RECTANGLE Администратор {
-  + Проверка регистраций
-  + Управление пользователями
-  + Управление курсами
-}
+System(course_management_system, "Система управления курсами", "Позволяет преподавателям и учебным заведениям управлять курсами, расписанием и взаимодействием со студентами.")
 
-RECTANGLE Система {
-  + Управление пользователями
-  + Управление курсами
-  + Управление учебными материалами
-}
+System_Ext(cms, "Система управления контентом", "Предоставление учебных материалов.")
+System_Ext(analytics, "Система аналитики", "Анализ данных о прогрессе студентов.")
+System_Ext(notification_system, "Система уведомлений", "Отправка уведомлений.")
 
-Пользователь --> Система : Взаимодействие
-Преподаватель --> Система : Взаимодействие
-Учебное_заведение --> Система : Взаимодействие
-Администратор --> Система : Взаимодействие
+Rel(teachers, course_management_system, "Использует для управления курсами и расписанием")
+Rel(institutions, course_management_system, "Использует для управления курсами и расписанием")
+Rel(students, course_management_system, "Использует для участия в курсах и взаимодействия с преподавателями")
+Rel(admins, course_management_system, "Управляет системой и пользователями")
+
+Rel_Back(teachers, notification_system, "Получает уведомления")
+Rel_Back(students, notification_system, "Получает уведомления")
+Rel_Neighbor(course_management_system, notification_system, "Отправляет уведомления", "HTTP/REST")
+
+Rel(course_management_system, cms, "Получает учебные материалы", "HTTP/REST")
+Rel(course_management_system, analytics, "Отправляет данные для анализа", "HTTP/REST")
 
 @enduml
-
