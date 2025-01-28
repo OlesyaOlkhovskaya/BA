@@ -3,8 +3,7 @@
 ' hide the spot
 ' hide circle
 
-' avoid problems with angled crows feet
-skinparam linetype ortho
+
 
 entity "Преподаватель" as Teacher {
   *ID : int 
@@ -58,7 +57,13 @@ entity "Оценка" as Grade {
   Оценка : int
   Дата : date
 }
-
+entity "Зачисление" as Enrollment {
+  *ID : int <<generated>>
+  --
+  СтудентID : int <<FK>>
+  КурсID : int <<FK>>
+  ДатаЗачисления : date
+}
 
 Teacher ||..o{ Course
 Institution ||..o{ Course
@@ -66,5 +71,6 @@ Student |o..o{ Course
 Course ||..o{ Schedule
 Student |o..o{ Grade
 Course |o..o{ Grade
-
+Student |o..o{ Enrollment
+Course |o..o{ Enrollment
 @enduml
